@@ -15,6 +15,7 @@ Limitations:
 
 Example:
   server.cpp:
+  
     #include "IpcBozo/bozo.h"
     enum {Method_1};
     
@@ -22,7 +23,7 @@ Example:
       std::cout << "a bozo called method_1(" << arg1 << ',' << arg2 << ')' << std::endl;
       return true;
     }
-
+    
     int main() {
       IpcBozo server("ipc_channel_1");
       
@@ -34,6 +35,7 @@ Example:
     }
 
   client.cpp:
+  
     #include "IpcBozo/bozo.h"
     enum {Method_1}; // same as server to be able to communicate
     
