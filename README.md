@@ -14,6 +14,7 @@ Limitations:
 1. only support char, bool, int, unsigned int, long, unsigned long, long long, unsigned long long, float, double, long double, std::string as method/signal argument type or return type;
 
 Example:
+
   server.cpp:
   
     #include "IpcBozo/bozo.h"
