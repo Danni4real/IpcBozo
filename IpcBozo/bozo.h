@@ -22,11 +22,11 @@
 class IpcBozo {
  public:
 
-  // client and server should set same ipc_name to communicate
-  IpcBozo(const std::string &ipc_name) {
-    dbus_server_name = "com.ipc_bozo_" + ipc_name + ".server";
-    dbus_object_name = "/com/ipc_bozo_" + ipc_name + "/object";
-    dbus_interface_name = "com.ipc_bozo_" + ipc_name + ".interface";
+  // client and server should set same ipc_channel to communicate
+  IpcBozo(const std::string &ipc_channel) {
+    dbus_server_name = "com.ipc_bozo_" + ipc_channel + ".server";
+    dbus_object_name = "/com/ipc_bozo_" + ipc_channel + "/object";
+    dbus_interface_name = "com.ipc_bozo_" + ipc_channel + ".interface";
   }
 
   bool client_init() {
@@ -76,13 +76,16 @@ class IpcBozo {
       goto fail;
     }
 
-    if (dbus_bus_request_name(server_dbus_connection, dbus_server_name.c_str(), DBUS_NAME_FLAG_REPLACE_EXISTING, &err) !=
+    if (dbus_bus_request_name(server_dbus_connection, dbus_server_name.c_str(), 
+                              DBUS_NAME_FLAG_REPLACE_EXISTING, &err) !=
         DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
       g_printf("server_init(): dbus_bus_request_name() failed: %s\n", err.message);
       goto fail;
     }
 
-    if (!dbus_connection_register_object_path(server_dbus_connection, dbus_object_name.c_str(), &dbus_server_v_table, this)) {
+    if (!dbus_connection_register_object_path(server_dbus_connection, 
+                                              dbus_object_name.c_str(), 
+                                              &dbus_server_v_table, this)) {
       g_printf("server_init(): dbus_connection_register_object_path() failed!\n");
       goto fail;
     }
@@ -222,7 +225,7 @@ class IpcBozo {
                                const gchar *,
                                const gchar *,
                                GVariant *parameters,
-                                gpointer object) {
+                               gpointer object) {
     auto bozo = (IpcBozo *) object;
     const gchar *arg;
     g_variant_get(parameters, "(&s)", &arg);
@@ -241,7 +244,9 @@ class IpcBozo {
     }
   }
 
-  static DBusHandlerResult server_message_handler(DBusConnection *conn, DBusMessage *message, void *object) {
+  static DBusHandlerResult server_message_handler(DBusConnection *conn, 
+                                                  DBusMessage *message, 
+                                                  void *object) {
     auto bozo = (IpcBozo *) object;
 
     DBusHandlerResult dbus_handler_ret = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -338,7 +343,9 @@ class IpcBozo {
 
   void dbus_send_signal(const std::string &arg) {
 
-    DBusMessage *message = dbus_message_new_signal(dbus_object_name.c_str(), dbus_interface_name.c_str(), SignalName);
+    DBusMessage *message = dbus_message_new_signal(dbus_object_name.c_str(), 
+                                                   dbus_interface_name.c_str(), 
+                                                   SignalName);
     if (!message) {
       g_printf("dbus_send_signal():dbus_message_new_signal() failed");
       return;
