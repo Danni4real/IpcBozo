@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <type_traits>
 
 #include <glib.h>
 #include <gio/gio.h>
@@ -82,7 +83,7 @@ class IpcBozo {
     signal_handler_map_no_arg[signal_id] = f;
   }
 
-  template<typename T, int MethodId, typename... Ts>
+  template<int MethodId, typename T, typename... Ts>
   bool remote_call(T *out_arg, Ts... in_args) {
     std::string call_ret;
     auto call_succeed = dbus_call(serialize(MethodId, in_args...), &call_ret);
@@ -101,7 +102,7 @@ class IpcBozo {
     return dbus_call(serialize(MethodId, in_args...), nullptr);
   }
 
-  template<typename T, int MethodId>
+  template<int MethodId, typename T>
   bool remote_call(T *out_arg) {
     std::string call_ret;
     auto call_succeed = dbus_call(serialize(MethodId), &call_ret);
@@ -220,13 +221,17 @@ class IpcBozo {
 
   template<typename T>
   void toVector(std::vector<std::string> *arg_vec, T arg) {
-    arg_vec->push_back(toString(arg));
+    if constexpr (std::is_convertible_v<T, std::string>) {
+      arg_vec->push_back(std::string(arg));
+    } else {
+      arg_vec->push_back(toString(arg));
+    }
   }
 
   template<typename T, typename... Ts>
   void toVector(std::vector<std::string> *arg_vec, T arg1, Ts... args) {
     toVector(arg_vec, arg1);
-    if (sizeof...(args) > 0) {
+    if constexpr (sizeof...(args) > 0) {
       toVector(arg_vec, args...);
     }
   }

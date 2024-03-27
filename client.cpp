@@ -34,8 +34,8 @@ void server_1_signal2_handler(bool arg1, long arg2, double arg3, std::string arg
 }
 
 int main() {
-  IpcBozo client_1(IpcBozoServer_1::IpcName);
-  IpcBozo client_2(IpcBozoServer_2::IpcName);
+  IpcBozo client_1(IpcBozoServer_1::IpcChannel);
+  IpcBozo client_2(IpcBozoServer_2::IpcChannel);
 
   if (!client_1.client_init()) { return 1; }
   if (!client_2.client_init()) { return 1; }
@@ -49,16 +49,16 @@ int main() {
   }
 
   bool ret_bool;
-  if (client_2.remote_call<bool, IpcBozoServer_2::Method1>(&ret_bool)) {
+  if (client_2.remote_call<IpcBozoServer_2::Method1>(&ret_bool)) {
     std::cout << "server_2: method1 return: " << ret_bool << std::endl;
   }
 
   long ret_long;
-  if (client_2.remote_call<long, IpcBozoServer_2::Method2, bool>(&ret_long, true)) {
+  if (client_2.remote_call<IpcBozoServer_2::Method2>(&ret_long, true)) {
     std::cout << "server_2: method2 return: " << ret_long << std::endl;
   }
 
-  if (client_2.remote_call<IpcBozoServer_2::Method3, double, std::string>(0.001,"bozo")) {
+  if (client_2.remote_call<IpcBozoServer_2::Method3>(0.001,"bozo")) {
     std::cout << "server_2: method3 return" << std::endl;
   }
 

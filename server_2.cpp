@@ -3,7 +3,7 @@
 #include "IpcBozo/bozo.h"
 #include "server_2_api.h"
 
-IpcBozo ipc_server(IpcBozoServer_2::IpcName);
+IpcBozo ipc_server(IpcBozoServer_2::IpcChannel);
 
 bool method1() {
   std::cout << "server_2: some one call method1()" << std::endl;

@@ -3,15 +3,14 @@
 A C++ IPC library based on Dbus with a very "bozo" interface
 
 Dependency:
-1. glib-2.0 
-2. gio-2.0 
-3. dbus-1 
-4. dbus-glib-1
-5. C++ 17
-6. nlohmann json (already included)
+1. C++17
+2. nlohmann json (already included)
+3. libglib2.0-dev
+4. libdbus-1-dev 
+5. libdbus-glib-1-dev
 
 Limitations:
-1. only support char, bool, int, unsigned int, long, unsigned long, long long, unsigned long long, float, double, long double, std::string as method/signal argument type or return type;
+1. only support char, bool, int, unsigned int, long, unsigned long, long long, unsigned long long, float, double, long double, std::string as method/signal argument type or method return type;
 
 Example:
 
@@ -46,7 +45,7 @@ Example:
       if (!client.client_init()) { return 1; }
 
       bool ret;
-      if (client.remote_call<bool, Method_1, double, std::string>(&ret, 0.01, "bozo")) {
+      if (client.remote_call<Method_1>(&ret, 0.01, "bozo")) {
         std::cout << "ipc_channel_1: Method_1 return: " << ret << std::endl;
       }
 
