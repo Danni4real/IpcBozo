@@ -45,7 +45,7 @@ Example:
       if (!client.client_init()) { return 1; }
 
       bool ret;
-      if (client.remote_call<Method_1>(&ret, 0.01, "bozo")) {
+      if (client.remote_call(&ret, Method_1, 0.01, "bozo")) {
         std::cout << "ipc_channel_1: Method_1 return: " << ret << std::endl;
       }
 
