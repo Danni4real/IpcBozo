@@ -44,26 +44,26 @@ int main() {
   client_1.register_signal_handler(IpcBozoServer_1::Signal2, server_1_signal2_handler);
   client_2.register_signal_handler(IpcBozoServer_2::Signal1, server_2_signal1_handler);
 
-  if (client_1.remote_call<IpcBozoServer_1::Method1>()) {
+  if (client_1.remote_call(IpcBozoServer_1::Method1)) {
     std::cout << "server_1: method1 return " << std::endl;
   }
 
   bool ret_bool;
-  if (client_2.remote_call<IpcBozoServer_2::Method1>(&ret_bool)) {
+  if (client_2.remote_call(&ret_bool, IpcBozoServer_2::Method1)) {
     std::cout << "server_2: method1 return: " << ret_bool << std::endl;
   }
 
   long ret_long;
-  if (client_2.remote_call<IpcBozoServer_2::Method2>(&ret_long, true)) {
+  if (client_2.remote_call(&ret_long, IpcBozoServer_2::Method2, true)) {
     std::cout << "server_2: method2 return: " << ret_long << std::endl;
   }
 
-  if (client_2.remote_call<IpcBozoServer_2::Method3>(0.001,"bozo")) {
+  if (client_2.remote_call(IpcBozoServer_2::Method3, 0.001,"bozo")) {
     std::cout << "server_2: method3 return" << std::endl;
   }
 
   // invalid call
-  if (client_2.remote_call<IpcBozoServer_2::Method4>()) {
+  if (client_2.remote_call(IpcBozoServer_2::Method4)) {
     std::cout << "server_2: method4 return" << std::endl;
   }
 

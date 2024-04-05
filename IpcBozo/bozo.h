@@ -154,29 +154,28 @@ class IpcBozo {
     signal_handler_map_no_arg[signal_id] = f;
   }
 
-  template<int MethodId, typename T, typename... Ts>
-  bool remote_call(T *out_arg, Ts... in_args) {
+  template<typename T, typename... Ts>
+  bool remote_call(T *out_arg, int method_id, Ts... in_args) {
     std::string call_ret;
-    auto call_succeed = dbus_call(serialize(MethodId, in_args...), &call_ret);
+    auto call_succeed = dbus_call(serialize(method_id, in_args...), &call_ret);
     *out_arg = stringTo<T>(call_ret);
 
     return call_succeed;
   }
 
-  template<int MethodId>
-  bool remote_call() {
-    return dbus_call(serialize(MethodId), nullptr);
+  bool remote_call(int method_id) {
+    return dbus_call(serialize(method_id), nullptr);
   }
 
-  template<int MethodId, typename... Ts>
-  bool remote_call(Ts... in_args) {
-    return dbus_call(serialize(MethodId, in_args...), nullptr);
+  template<typename... Ts>
+  bool remote_call(int method_id, Ts... in_args) {
+    return dbus_call(serialize(method_id, in_args...), nullptr);
   }
 
-  template<int MethodId, typename T>
-  bool remote_call(T *out_arg) {
+  template<typename T>
+  bool remote_call(T *out_arg, int method_id) {
     std::string call_ret;
-    auto call_succeed = dbus_call(serialize(MethodId), &call_ret);
+    auto call_succeed = dbus_call(serialize(method_id), &call_ret);
     *out_arg = stringTo<T>(call_ret);
 
     return call_succeed;
@@ -259,7 +258,6 @@ class IpcBozo {
     dbus_error_init(&err);
 
     if (!dbus_message_is_method_call(message, bozo->dbus_interface_name.c_str(), MethodName)) {
-      g_printf("server_message_handler():dbus_message_is_method_call() failed\n");
       goto end;
     }
 
