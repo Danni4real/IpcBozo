@@ -215,6 +215,7 @@ class IpcBozo {
   std::map<int, std::function<std::string(const std::vector<std::string> &arg_vec)>> method_map;
 
   DBusObjectPathVTable dbus_server_v_table = {
+    .unregister_function = nullptr,
     .message_function = server_message_handler
   };
 
